@@ -1,0 +1,32 @@
+version: '3'
+services:
+  app:
+    build:
+      context: ./app/
+      dockerfile: Dockerfile-app-php-fpm
+    container_name: app
+    working_dir: /application
+    volumes:
+        - ./app/:/var/www
+    restart: always
+    tty: true
+    networks:
+      - app-network
+
+  nginx:
+    container_name: nginx
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile-nginx
+    restart: always
+    tty: true
+    ports:
+      - "8091:80"
+    volumes:
+      - ./app/:/var/www
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
